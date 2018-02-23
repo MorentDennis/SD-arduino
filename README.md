@@ -1,6 +1,6 @@
 # Monster Kong
 
-This is a Donkey Kong clone I made to practice Phaser fundamentals.
+This is a clone of the classic Donkey Kong I made to practice Phaser fundamentals.
 
 Here is a live version of the final product:
 

@@ -220,7 +220,7 @@ let GameState = {
     }, this);
   },
   killPlayer(player, fire) {
-    console.log("auch!");
+    console.log("ouch!");
     game.state.start("GameState");
   },
   win(player, goal) {
