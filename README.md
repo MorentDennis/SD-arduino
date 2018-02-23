@@ -1,6 +1,6 @@
 # Monster Kong
 
-This is a simple game I built to practice some Phaser fundamentals. This game very closely resembles the play style of the original Donkey Kong.
+This is a Donkey Kong clone I made to practice Phaser fundamentals.
 
 Here is a live version of the final product:
 
@@ -27,7 +27,7 @@ git clone https://github.com/chrisbremmer/monster-kong
 cd into folder
 
 ```
-cd virtual-pet
+cd monster-kong
 ```
 
 This is where the steps differ for Python and Node!
