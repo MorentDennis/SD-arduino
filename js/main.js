@@ -1,7 +1,7 @@
 //this game will have only 1 state
 let GameState = {
   //initiate game settings
-  init: function() {
+  init() {
     //adapt to screen size, fit all the game
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
     this.scale.pageAlignHorizontally = true;
@@ -9,10 +9,15 @@ let GameState = {
 
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
     this.game.physics.arcade.gravity.y = 1000;
+
+    this.cursors = this.game.input.keyboard.createCursorKeys();
+
+    this.RUNNING_SPEED = 180;
+    this.JUMPING_SPEED = 550;
   },
 
   //load the game assets before the game starts
-  preload: function() {
+  preload() {
     this.load.image("ground", "assets/images/ground.png");
     this.load.image("platform", "assets/images/platform.png");
     this.load.image("goal", "assets/images/gorilla3.png");
@@ -40,7 +45,7 @@ let GameState = {
     );
   },
   //executed after everything is loaded
-  create: function() {
+  create() {
     this.ground = this.add.sprite(0, 500, "ground");
     this.game.physics.arcade.enable(this.ground);
     this.ground.body.allowGravity = false;
@@ -57,12 +62,21 @@ let GameState = {
     this.player.animations.add("walking", [0, 1, 2, 1], 6, true);
     this.game.physics.arcade.enable(this.player);
   },
-  update: function() {
+  update() {
     this.game.physics.arcade.collide(this.player, this.ground);
-    this.game.physics.arcade.overlap(this.player, this.platform, this.landed);
-  },
-  landed: function(player, ground) {
-    console.log("landed");
+    this.game.physics.arcade.collide(this.player, this.platform);
+
+    this.player.body.velocity.x = 0;
+
+    if (this.cursors.left.isDown) {
+      this.player.body.velocity.x = -this.RUNNING_SPEED;
+    } else if (this.cursors.right.isDown) {
+      this.player.body.velocity.x = this.RUNNING_SPEED;
+    }
+
+    if (this.cursors.up.isDown && this.player.body.touching.down) {
+      this.player.body.velocity.y = -this.JUMPING_SPEED;
+    }
   }
 };
 
