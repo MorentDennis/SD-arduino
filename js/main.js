@@ -17,7 +17,6 @@ let GameState = {
     this.RUNNING_SPEED = 180;
     this.JUMPING_SPEED = 550;
   },
-
   //load the game assets before the game starts
   preload() {
     this.load.image("ground", "assets/images/ground.png");
