@@ -45,6 +45,8 @@ let GameState = {
       1,
       1
     );
+
+    this.load.text("level", "assets/data/level.json");
   },
   //executed after everything is loaded
   create() {
@@ -53,17 +55,15 @@ let GameState = {
     this.ground.body.allowGravity = false;
     this.ground.body.immovable = true;
 
-    let platformData = [
-      { x: 0, y: 430 },
-      { x: 45, y: 560 },
-      { x: 90, y: 290 },
-      { x: 0, y: 140 }
-    ];
+    //parse the file
+    this.levelData = JSON.parse(this.game.cache.getText("level"));
+
+    console.log(this.levelData);
 
     this.platforms = this.add.group();
     this.platforms.enableBody = true;
 
-    platformData.forEach(function(element) {
+    this.levelData.platformData.forEach(function(element) {
       this.platforms.create(element.x, element.y, "platform");
     }, this);
 
@@ -71,7 +71,12 @@ let GameState = {
     this.platforms.setAll("body.allowGravity", false);
 
     //create player
-    this.player = this.add.sprite(10, 545, "player", 3);
+    this.player = this.add.sprite(
+      this.levelData.playerStart.x,
+      this.levelData.playerStart.y,
+      "player",
+      3
+    );
     this.player.anchor.setTo(0.5);
     this.player.animations.add("walking", [0, 1, 2, 1], 6, true);
     this.game.physics.arcade.enable(this.player);
