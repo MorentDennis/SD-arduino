@@ -4,7 +4,7 @@ This is a simple game I built to practice some Phaser fundamentals. This game ve
 
 Here is a live version of the final product:
 
-[Demo](https://chrisbremmer.github.io/monster-kongs/)
+[Demo](https://chrisbremmer.github.io/monster-kong/)
 
 ## Getting Started
 
