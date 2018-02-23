@@ -1,7 +1,7 @@
 //this game will have only 1 state
-let GameState = {
+var GameState = {
   //initiate game settings
-  init() {
+  init: function() {
     //adapt to screen size, fit all the game
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
     this.scale.pageAlignHorizontally = true;
@@ -17,7 +17,7 @@ let GameState = {
   },
 
   //load the game assets before the game starts
-  preload() {
+  preload: function() {
     this.load.image("ground", "assets/images/ground.png");
     this.load.image("platform", "assets/images/platform.png");
     this.load.image("goal", "assets/images/gorilla3.png");
@@ -45,7 +45,7 @@ let GameState = {
     );
   },
   //executed after everything is loaded
-  create() {
+  create: function() {
     this.ground = this.add.sprite(0, 500, "ground");
     this.game.physics.arcade.enable(this.ground);
     this.ground.body.allowGravity = false;
@@ -65,7 +65,7 @@ let GameState = {
 
     this.createOnscreenControls();
   },
-  update() {
+  update: function() {
     this.game.physics.arcade.collide(this.player, this.ground);
     this.game.physics.arcade.collide(this.player, this.platform);
 
@@ -81,7 +81,7 @@ let GameState = {
       this.player.body.velocity.y = -this.JUMPING_SPEED;
     }
   },
-  createOnscreenControls() {
+  createOnscreenControls: function() {
     this.leftArrow = this.add.button(20, 535, "arrowButton");
     this.rightArrow = this.add.button(110, 535, "arrowButton");
     this.actionButton = this.add.button(280, 535, "actionButton");
@@ -93,7 +93,7 @@ let GameState = {
 };
 
 //initiate the Phaser framework
-let game = new Phaser.Game(360, 592, Phaser.AUTO);
+var game = new Phaser.Game(360, 592, Phaser.AUTO);
 
 game.state.add("GameState", GameState);
 game.state.start("GameState");
