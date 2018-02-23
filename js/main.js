@@ -1,7 +1,7 @@
 //this game will have only 1 state
 let GameState = {
   //initiate game settings
-  init() {
+  init: function() {
     //adapt to screen size, fit all the game
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
     this.scale.pageAlignHorizontally = true;
@@ -19,7 +19,7 @@ let GameState = {
   },
 
   //load the game assets before the game starts
-  preload() {
+  preload: function() {
     this.load.image("ground", "assets/images/ground.png");
     this.load.image("platform", "assets/images/platform.png");
     this.load.image("goal", "assets/images/gorilla3.png");
@@ -49,7 +49,7 @@ let GameState = {
     this.load.text("level", "assets/data/level.json");
   },
   //executed after everything is loaded
-  create() {
+  create: function() {
     this.ground = this.add.sprite(0, 638, "ground");
     this.game.physics.arcade.enable(this.ground);
     this.ground.body.allowGravity = false;
@@ -70,6 +70,19 @@ let GameState = {
     this.platforms.setAll("body.immovable", true);
     this.platforms.setAll("body.allowGravity", false);
 
+    //fires
+    this.fires = this.add.group();
+    this.fires.enableBody = true;
+
+    let fire;
+    this.levelData.fireData.forEach(function(element) {
+      fire = this.fires.create(element.x, element.y, "fire");
+      fire.animations.add("fire", [0, 1], 4, true);
+      fire.play("fire");
+    }, this);
+
+    this.fires.setAll("body.allowGravity", false);
+
     //create player
     this.player = this.add.sprite(
       this.levelData.playerStart.x,
@@ -86,9 +99,11 @@ let GameState = {
 
     this.createOnscreenControls();
   },
-  update() {
+  update: function() {
     this.game.physics.arcade.collide(this.player, this.ground);
     this.game.physics.arcade.collide(this.player, this.platforms);
+
+    this.game.physics.arcade.overlap(this.player, this.fires, this.killPlayer);
 
     this.player.body.velocity.x = 0;
 
@@ -116,7 +131,7 @@ let GameState = {
       this.player.customParams.mustJump = false;
     }
   },
-  createOnscreenControls() {
+  createOnscreenControls: function() {
     this.leftArrow = this.add.button(20, 535, "arrowButton");
     this.rightArrow = this.add.button(110, 535, "arrowButton");
     this.actionButton = this.add.button(280, 535, "actionButton");
@@ -170,6 +185,10 @@ let GameState = {
     this.rightArrow.events.onInputOut.add(function() {
       this.player.customParams.isMovingRight = false;
     }, this);
+  },
+  killPlayer: function(player, fire) {
+    console.log("auch!");
+    game.state.start("GameState");
   }
 };
 
