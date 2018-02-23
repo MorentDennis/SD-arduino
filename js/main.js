@@ -1,7 +1,7 @@
 //this game will have only 1 state
 let GameState = {
   //initiate game settings
-  init() {
+  init: function() {
     //adapt to screen size, fit all the game
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
     this.scale.pageAlignHorizontally = true;
@@ -12,7 +12,7 @@ let GameState = {
   },
 
   //load the game assets before the game starts
-  preload() {
+  preload: function() {
     this.load.image("ground", "assets/images/ground.png");
     this.load.image("platform", "assets/images/platform.png");
     this.load.image("goal", "assets/images/gorilla3.png");
@@ -40,16 +40,16 @@ let GameState = {
     );
   },
   //executed after everything is loaded
-  create() {
+  create: function() {
     this.ground = this.add.sprite(0, 500, "ground");
     this.game.physics.arcade.enable(this.ground);
     this.ground.body.allowGravity = false;
     this.ground.body.immovable = true;
 
-    let platform = this.add.sprite(0, 300, "platform");
-    this.game.physics.arcade.enable(platform);
-    platform.body.allowGravity = false;
-    platform.body.immovable = true;
+    this.platform = this.add.sprite(0, 300, "platform");
+    this.game.physics.arcade.enable(this.platform);
+    this.platform.body.allowGravity = false;
+    this.platform.body.immovable = true;
 
     //create player
     this.player = this.add.sprite(100, 200, "player", 3);
@@ -57,7 +57,13 @@ let GameState = {
     this.player.animations.add("walking", [0, 1, 2, 1], 6, true);
     this.game.physics.arcade.enable(this.player);
   },
-  update() {}
+  update: function() {
+    this.game.physics.arcade.collide(this.player, this.ground);
+    this.game.physics.arcade.overlap(this.player, this.platform, this.landed);
+  },
+  landed: function(player, ground) {
+    console.log("landed");
+  }
 };
 
 //initiate the Phaser framework
