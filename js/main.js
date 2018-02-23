@@ -105,6 +105,15 @@ let GameState = {
     this.game.camera.follow(this.player);
 
     this.createOnscreenControls();
+
+    this.barrels = this.add.group();
+    this.barrels.enableBody = true;
+
+    this.barrelCreator = this.game.time.events.loop(
+      Phaser.Timer.SECOND * this.levelData.barrelFrequency,
+      this.createBarrel,
+      this
+    );
   },
   update() {
     this.game.physics.arcade.collide(this.player, this.ground);
@@ -195,12 +204,22 @@ let GameState = {
     }, this);
   },
   killPlayer(player, fire) {
-    console.log("ouch!");
+    console.log("auch!");
     game.state.start("GameState");
   },
   win(player, goal) {
     alert("you win!");
     game.state.start("GameState");
+  },
+  createBarrel() {
+    //give me the first dead sprite
+    let barrel = this.barrels.getFirstExists(false);
+
+    if (!barrel) {
+      barrel = this.barrels.create(0, 0, "barrel");
+    }
+
+    barrel.reset(this.levelData.goal.x, this.levelData.goal.y);
   }
 };
 
