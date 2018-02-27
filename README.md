@@ -63,6 +63,6 @@ localhost:8000
 * [Python/SimpleHTTPServer](https://docs.python.org/2/library/simplehttpserver.html) - Python SimpleHTTPServer Docs
 * [Node/HTTP-Server](https://www.npmjs.com/package/http-server) - Node HTTP-Server Docs
 
-## Authors
+## Author
 
-* **Chris Bremmer** - [Personal Site](chrisbremmer.com)
+* **Chris Bremmer** - [Personal Site](http://www.chrisbremmer.com)
