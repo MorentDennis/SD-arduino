@@ -16,6 +16,8 @@ let GameState = {
 
     this.RUNNING_SPEED = 180;
     this.JUMPING_SPEED = 550;
+
+    this.socket = io.connect();
   },
   //load the game assets before the game starts
   preload() {
@@ -49,6 +51,9 @@ let GameState = {
   },
   //executed after everything is loaded
   create() {
+    this.socket.on('test', () => {
+      console.log("socket connected")
+    })
     this.ground = this.add.sprite(0, 638, "ground");
     this.game.physics.arcade.enable(this.ground);
     this.ground.body.allowGravity = false;
@@ -116,7 +121,44 @@ let GameState = {
       this
     );
   },
+
+  moveToRight() {
+    this.player.customParams.isMovingRight = true;
+    this.player.customParams.isMovingLeft = false;
+    this.player.body.velocity.x = this.RUNNING_SPEED;
+      this.player.scale.setTo(-1, 1);
+      this.player.play("walking");
+  },
+  moveToLeft() {
+    this.player.customParams.isMovingRight = false;
+    this.player.customParams.isMovingLeft = true;
+    this.player.body.velocity.x = -this.RUNNING_SPEED;
+    this.player.scale.setTo(1, 1);
+    this.player.play("walking");
+
+  },
+
   update() {
+    this.speed = 6;
+    this.prevX = 508;
+    
+
+
+    this.socket.on('xdata', (data) => {
+      
+      console.log(data);
+      if(data > 530)
+      {
+        
+        this.moveToRight(); 
+      }
+      if(data < 500)
+      {
+        this.moveToLeft();
+      }
+    })
+
+
     this.game.physics.arcade.collide(this.player, this.ground);
     this.game.physics.arcade.collide(this.player, this.platforms);
 
@@ -133,13 +175,12 @@ let GameState = {
 
     this.player.body.velocity.x = 0;
 
-    if (this.cursors.left.isDown || this.player.customParams.isMovingLeft) {
+    if (this.cursors.left.isDown ) {
       this.player.body.velocity.x = -this.RUNNING_SPEED;
       this.player.scale.setTo(1, 1);
       this.player.play("walking");
     } else if (
-      this.cursors.right.isDown ||
-      this.player.customParams.isMovingRight
+      this.cursors.right.isDown 
     ) {
       this.player.body.velocity.x = this.RUNNING_SPEED;
       this.player.scale.setTo(-1, 1);
