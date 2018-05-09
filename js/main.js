@@ -51,6 +51,14 @@ let GameState = {
   },
   //executed after everything is loaded
   create() {
+
+
+    this.movingRight = false;
+    this.movingLeft = false;
+
+
+
+
     this.socket.on('test', () => {
       console.log("socket connected")
     })
@@ -58,6 +66,12 @@ let GameState = {
     this.game.physics.arcade.enable(this.ground);
     this.ground.body.allowGravity = false;
     this.ground.body.immovable = true;
+
+
+    var UPDATE_TIME = 200;
+    
+    this.updateMovementTimer = game.time.events.add(UPDATE_TIME, this.checkForMovement, this);
+
 
     //parse the file
     this.levelData = JSON.parse(this.game.cache.getText("level"));
@@ -122,6 +136,39 @@ let GameState = {
     );
   },
 
+  checkForMovement() {
+    this.socket.on('movedRight', () => {
+     // this.moveToRight();
+     this.isMovingRight  = true;
+     this.isMovingLeft = false;
+     this.player.customParams.isMovingLeft = false;
+     this.player.customParams.isMovingRight = true;
+     setTimeout(() => {
+      this.isMovingRight  = false;
+      this.player.customParams.isMovingRight = false;
+     }, 100);
+     
+      console.log("right");
+    })
+    this.socket.on('movedLeft', () => {
+      this.isMovingRight = false;
+      this.isMovingLeft = true;
+      this.player.customParams.isMovingLeft = true;
+      this.player.customParams.isMovingRight = false;
+      setTimeout(() => {
+        this.isMovingLeft  = false;
+        this.player.customParams.isMovingLeft = false;
+       }, 100);
+      
+    //  this.moveToLeft();
+      console.log("left");
+    })
+
+    
+    
+
+  },
+
   moveToRight() {
     this.player.customParams.isMovingRight = true;
     this.player.customParams.isMovingLeft = false;
@@ -142,21 +189,14 @@ let GameState = {
     this.speed = 6;
     this.prevX = 508;
     
+    
+   
 
 
-    this.socket.on('xdata', (data) => {
-      
-      console.log(data);
-      if(data > 530)
-      {
-        
-        this.moveToRight(); 
-      }
-      if(data < 500)
-      {
-        this.moveToLeft();
-      }
-    })
+    
+
+    this.player.animations.stop();
+    this.player.frame = 3;
 
 
     this.game.physics.arcade.collide(this.player, this.ground);
@@ -175,12 +215,12 @@ let GameState = {
 
     this.player.body.velocity.x = 0;
 
-    if (this.cursors.left.isDown ) {
+    if ( this.isMovingLeft ) {
       this.player.body.velocity.x = -this.RUNNING_SPEED;
       this.player.scale.setTo(1, 1);
       this.player.play("walking");
     } else if (
-      this.cursors.right.isDown 
+      this.isMovingRight
     ) {
       this.player.body.velocity.x = this.RUNNING_SPEED;
       this.player.scale.setTo(-1, 1);
@@ -191,7 +231,7 @@ let GameState = {
     }
 
     if (
-      (this.cursors.up.isDown || this.player.customParams.mustJump) &&
+      (this.cursors.up.isDown || this.player.customParams.mustJump ) &&
       this.player.body.touching.down
     ) {
       this.player.body.velocity.y = -this.JUMPING_SPEED;

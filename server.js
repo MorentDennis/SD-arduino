@@ -32,7 +32,7 @@ sp.on("close", function (err) {
   });
 
 var cleanDataX = ""; // this stores the clean data
-var readDataX = "";  // this stores the buffer
+var bufferString = "";  // this stores the buffer
 
 var cleanDataY = "";
 var readDataY = "";
@@ -41,25 +41,35 @@ var readDataY = "";
 
 sp.on("data", function (data) { // call back when data is received
 	
-	console.log("serial port: " + data.toString());
+	//console.log("serial port: " + data.toString());
 	
-    readDataX += data.toString(); // append data to buffer
+    bufferString += data.toString() 
+    console.log(bufferString);
+   // console.log(readDataX) // append data to buffer
     // if the letters "A" and "B" are found on the buffer then isolate what"s in the middle
     // as clean data. Then clear the buffer.
-    if (readDataX.indexOf("B") >= 0 && readDataX.indexOf("A") >= 0) {
-        cleanDataX = readDataX.substring(readDataX.indexOf("A") + 1, readDataX.indexOf("B"));
-        readDataX = "";
-        io.sockets.emit("xdata", cleanDataX);
+    if (bufferString.indexOf("B") >= 0 && bufferString.indexOf("A") >= 0) {
+        cleanDataX = bufferString.substring(bufferString.indexOf("A") + 1, bufferString.indexOf("B"));
+        bufferString = "";
+        if(cleanDataX  === "1023")
+        {
+            io.sockets.emit("movedRight");
+            console.log("movedRight")
+          //  readDataX = "";
+        }
+        else if (cleanDataX <= 1)
+        {
+            io.sockets.emit("movedLeft");
+        //    readDataX =  "";
+        }
+
+            
+        
+        
+        
     }
 
-    readDataY += data.toString(); 
-
-
-    if (readDataY.indexOf("C") >= 0 && readDataY.indexOf("D") >= 0) {
-        cleanDataY = readDataY.substring(readDataY.indexOf("C") + 1, readDataY.indexOf("D"));
-        readDataY = "";
-        io.sockets.emit("ydata", cleanDataY);
-    }
+   
 
 });
 
