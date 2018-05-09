@@ -137,17 +137,30 @@ let GameState = {
   },
 
   checkForMovement() {
+
+    this.socket.on("stopped", () => {
+      this.isMovingRight = false;
+      this.isMovingLeft = false;
+      this.player.customParams.isMovingLeft = false;
+      this.player.customParams.isMovingRight = false;
+    })
+
+
     this.socket.on('movedRight', () => {
+      
+   
      // this.moveToRight();
      this.isMovingRight  = true;
      this.isMovingLeft = false;
      this.player.customParams.isMovingLeft = false;
      this.player.customParams.isMovingRight = true;
-     setTimeout(() => {
-      this.isMovingRight  = false;
-      this.player.customParams.isMovingRight = false;
-     }, 100);
+   
      
+
+
+    // this.timer = game.time.events.add(Phaser.Timer.SECOND * 4, fadePicture, this)
+
+
       console.log("right");
     })
     this.socket.on('movedLeft', () => {
@@ -155,10 +168,7 @@ let GameState = {
       this.isMovingLeft = true;
       this.player.customParams.isMovingLeft = true;
       this.player.customParams.isMovingRight = false;
-      setTimeout(() => {
-        this.isMovingLeft  = false;
-        this.player.customParams.isMovingLeft = false;
-       }, 100);
+      
       
     //  this.moveToLeft();
       console.log("left");

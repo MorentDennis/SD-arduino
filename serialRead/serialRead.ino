@@ -20,14 +20,14 @@ void loop() {
 
 
   
-  if (prevX != xAxis) {
+  
     // print the results to the serial monitor:
     Serial.print("A"); // Print the letter A to signal the start of the input
     Serial.print(xAxis); // Send the sensor Value (this is an integer)
     Serial.print("B"); // Print the letter B to signal the end of an Input
     prevX = xAxis;
   // Change the previous sensor value
-  }
+  
  
   // wait 100 milliseconds before the next loop
   // for the analog-to-digital converter to settle

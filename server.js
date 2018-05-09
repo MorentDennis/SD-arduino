@@ -51,7 +51,7 @@ sp.on("data", function (data) { // call back when data is received
     if (bufferString.indexOf("B") >= 0 && bufferString.indexOf("A") >= 0) {
         cleanDataX = bufferString.substring(bufferString.indexOf("A") + 1, bufferString.indexOf("B"));
         bufferString = "";
-        if(cleanDataX  === "1023")
+        if(cleanDataX  == 1023)
         {
             io.sockets.emit("movedRight");
             console.log("movedRight")
@@ -62,6 +62,10 @@ sp.on("data", function (data) { // call back when data is received
             io.sockets.emit("movedLeft");
         //    readDataX =  "";
         }
+        else if (cleanDataX  < 1022) {
+            io.sockets.emit("stopped")
+        }
+
 
             
         
