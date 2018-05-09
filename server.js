@@ -1,6 +1,7 @@
 var express = require('express');
 var SerialPort = require("serialport");
 var portName = 'COM3';
+var portName2 = 'COM4';
 
 var app = express();
 var server = require('http').Server(app);
@@ -14,7 +15,8 @@ app.get('/',function(req,res){
     res.sendFile(__dirname+'/index.html');
 });
 
-
+var sp2 = new SerialPort(portName2,{baudRate:9600});
+sp2.write("won");
 var sp = new SerialPort(portName, {
     baudRate: 9600
 });// instantiate the port
