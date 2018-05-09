@@ -1,7 +1,9 @@
 
 int xAxis = 0; 
+int yAxis = 0;
 
 int prevX = 0;
+int prevY = 0;
 
 
 
@@ -13,7 +15,7 @@ void setup() {
 void loop() {
   // read the analog in value:
   xAxis = analogRead(A0);
-  //yAxis = analogRead(A1);
+  yAxis = analogRead(A1);
 
   // If the previous value is the same as the new one, the do not send to save
   // communication link between the Arduino and the PC. 
@@ -25,8 +27,14 @@ void loop() {
     Serial.print("A"); // Print the letter A to signal the start of the input
     Serial.print(xAxis); // Send the sensor Value (this is an integer)
     Serial.print("B"); // Print the letter B to signal the end of an Input
-    prevX = xAxis;
+    
   // Change the previous sensor value
+  if(prevY != yAxis){
+    Serial.print("C"); // Print the letter A to signal the start of the input
+    Serial.print(yAxis); // Send the sensor Value (this is an integer)
+    Serial.print("D"); // Print the letter B to signal the end of an Input
+    prevY = yAxis;
+    }
   
  
   // wait 100 milliseconds before the next loop

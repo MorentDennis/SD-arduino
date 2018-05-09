@@ -45,16 +45,22 @@ sp.on("data", function (data) { // call back when data is received
 	
     bufferString += data.toString() 
     console.log(bufferString);
+  //  console.log(bufferString);
    // console.log(readDataX) // append data to buffer
     // if the letters "A" and "B" are found on the buffer then isolate what"s in the middle
     // as clean data. Then clear the buffer.
     if (bufferString.indexOf("B") >= 0 && bufferString.indexOf("A") >= 0) {
         cleanDataX = bufferString.substring(bufferString.indexOf("A") + 1, bufferString.indexOf("B"));
+        cleanDataY =  bufferString.substring(bufferString.indexOf("C") + 1, bufferString.indexOf("D"))
+       
+        console.log(cleanDataY);
+        
         bufferString = "";
+       
         if(cleanDataX  == 1023)
         {
             io.sockets.emit("movedRight");
-            console.log("movedRight")
+          //  console.log("movedRight")
           //  readDataX = "";
         }
         else if (cleanDataX <= 1)
@@ -65,6 +71,13 @@ sp.on("data", function (data) { // call back when data is received
         else if (cleanDataX  < 1022) {
             io.sockets.emit("stopped")
         }
+        if (cleanDataY > 700)
+        {
+            io.sockets.emit("jumped");
+        }
+       
+        cleanDataX = "";
+        cleanDataY = "";
 
 
             

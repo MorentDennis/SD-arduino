@@ -68,10 +68,10 @@ let GameState = {
     this.ground.body.immovable = true;
 
 
-    var UPDATE_TIME = 200;
+    var UPDATE_TIME = 150;
     
     this.updateMovementTimer = game.time.events.add(UPDATE_TIME, this.checkForMovement, this);
-
+   // this.updateJumpTimer = game.time.events.add(100, this.checkForJump, this);
 
     //parse the file
     this.levelData = JSON.parse(this.game.cache.getText("level"));
@@ -136,6 +136,11 @@ let GameState = {
     );
   },
 
+
+  checkForJump() {
+    
+  },
+
   checkForMovement() {
 
     this.socket.on("stopped", () => {
@@ -143,6 +148,13 @@ let GameState = {
       this.isMovingLeft = false;
       this.player.customParams.isMovingLeft = false;
       this.player.customParams.isMovingRight = false;
+    })
+
+    this.socket.on("jumped", () => {
+      this.player.customParams.mustJump = true;
+      setTimeout(() => {
+        this.player.customParams.mustJump = false;
+      }, 150);
     })
 
 
@@ -241,7 +253,7 @@ let GameState = {
     }
 
     if (
-      (this.cursors.up.isDown || this.player.customParams.mustJump ) &&
+      ( this.player.customParams.mustJump ) &&
       this.player.body.touching.down
     ) {
       this.player.body.velocity.y = -this.JUMPING_SPEED;
