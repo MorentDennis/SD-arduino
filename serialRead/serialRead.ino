@@ -29,17 +29,16 @@ void loop() {
     Serial.print("B"); // Print the letter B to signal the end of an Input
     
   // Change the previous sensor value
-  if(prevY != yAxis){
+    delay(50);
     Serial.print("C"); // Print the letter A to signal the start of the input
     Serial.print(yAxis); // Send the sensor Value (this is an integer)
     Serial.print("D"); // Print the letter B to signal the end of an Input
-    prevY = yAxis;
-    }
+    delay(50);
   
  
   // wait 100 milliseconds before the next loop
   // for the analog-to-digital converter to settle
   // after the last reading. If you are sending too fast
   // there is also a tendency to flood the communication line.
-  delay(200);                     
+  delay(100);                     
 }

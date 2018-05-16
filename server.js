@@ -44,7 +44,7 @@ sp.on("data", function (data) { // call back when data is received
 	//console.log("serial port: " + data.toString());
 	
     bufferString += data.toString() 
-    console.log(bufferString);
+   // console.log(bufferString);
   //  console.log(bufferString);
    // console.log(readDataX) // append data to buffer
     // if the letters "A" and "B" are found on the buffer then isolate what"s in the middle
@@ -52,7 +52,7 @@ sp.on("data", function (data) { // call back when data is received
     if (bufferString.indexOf("B") >= 0 && bufferString.indexOf("A") >= 0) {
         cleanDataX = bufferString.substring(bufferString.indexOf("A") + 1, bufferString.indexOf("B"));
         cleanDataY =  bufferString.substring(bufferString.indexOf("C") + 1, bufferString.indexOf("D"))
-       
+       // console.log(cleanDataX);
         console.log(cleanDataY);
         
         bufferString = "";
@@ -71,18 +71,18 @@ sp.on("data", function (data) { // call back when data is received
         else if (cleanDataX  < 1022) {
             io.sockets.emit("stopped")
         }
-        if (cleanDataY > 700)
+        if (cleanDataY == 1023)
         {
             io.sockets.emit("jumped");
         }
+        else if(cleanDataY < 1022)
+        {
+            io.sockets.emit("nojump");
+        } 
        
         cleanDataX = "";
         cleanDataY = "";
 
-
-            
-        
-        
         
     }
 

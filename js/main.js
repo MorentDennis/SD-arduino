@@ -15,7 +15,7 @@ let GameState = {
     this.game.world.setBounds(0, 0, 360, 700);
 
     this.RUNNING_SPEED = 180;
-    this.JUMPING_SPEED = 550;
+    this.JUMPING_SPEED = 530;
 
     this.socket = io.connect();
   },
@@ -68,7 +68,7 @@ let GameState = {
     this.ground.body.immovable = true;
 
 
-    var UPDATE_TIME = 150;
+    var UPDATE_TIME = 175;
     
     this.updateMovementTimer = game.time.events.add(UPDATE_TIME, this.checkForMovement, this);
    // this.updateJumpTimer = game.time.events.add(100, this.checkForJump, this);
@@ -148,14 +148,15 @@ let GameState = {
       this.isMovingLeft = false;
       this.player.customParams.isMovingLeft = false;
       this.player.customParams.isMovingRight = false;
+      this.player.customParams.mustJump = false;
     })
 
     this.socket.on("jumped", () => {
       this.player.customParams.mustJump = true;
-      setTimeout(() => {
-        this.player.customParams.mustJump = false;
-      }, 150);
-    })
+    });
+
+    this.socket.on("nojump", () => this.player.customParams.mustJump = false)
+    
 
 
     this.socket.on('movedRight', () => {
@@ -257,7 +258,7 @@ let GameState = {
       this.player.body.touching.down
     ) {
       this.player.body.velocity.y = -this.JUMPING_SPEED;
-      this.player.customParams.mustJump = false;
+      //this.player.customParams.mustJump = false;
     }
 
     this.barrels.forEach(function(element) {
@@ -342,6 +343,9 @@ let GameState = {
 
     barrel.reset(this.levelData.goal.x, this.levelData.goal.y);
     barrel.body.velocity.x = this.levelData.barrelSpeed;
+  },
+  finishGame() {
+    this.socket.emit("gamefinished")
   }
 };
 
@@ -350,3 +354,5 @@ let game = new Phaser.Game(360, 592, Phaser.AUTO);
 
 game.state.add("GameState", GameState);
 game.state.start("GameState");
+
+
