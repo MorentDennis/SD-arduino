@@ -14,6 +14,9 @@ var rl = readline.createInterface(
 )
 myPort.on('open',()=> {
     console.log("port open");
+    setTimeout(() => {
+        myPort.write("test3");
+    }, 4000);
 
 })
 
