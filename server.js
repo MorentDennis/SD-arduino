@@ -1,6 +1,9 @@
 var express = require('express');
 var SerialPort = require("serialport");
 var portName = 'COM3';
+var otherPortName = 'COM4';
+process.env.UV_THREADPOOL_SIZE=64
+
 
 var app = express();
 var server = require('http').Server(app);
@@ -13,6 +16,17 @@ app.use('/assets',express.static(__dirname + '/assets'));
 app.get('/',function(req,res){
     res.sendFile(__dirname+'/index.html');
 });
+
+
+var outPutSp = new SerialPort(otherPortName, {
+    baudRate: 9600
+})
+
+
+outPutSp.on('open', () => {
+    console.log('outPut port open');
+    outPutSp.write('H');
+})
 
 
 var sp = new SerialPort(portName, {
