@@ -1,3 +1,5 @@
+let Game = {};
+
 Game.MainMenu = function(game){
 
 };
@@ -29,5 +31,5 @@ Game.MainMenu.prototype = {
 let game = new Phaser.Game(360, 592, Phaser.AUTO);
 
 game.state.add("Game", Game);
-game.state.add("GameState", GameState);
+// game.state.add("GameState", GameState);
 game.state.start("Game");
