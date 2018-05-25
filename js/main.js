@@ -1,3 +1,4 @@
+let socket = io.connect();
 //this game will have only 1 state
 let GameState = {
   //initiate game settings
@@ -17,7 +18,7 @@ let GameState = {
     this.RUNNING_SPEED = 180;
     this.JUMPING_SPEED = 530;
 
-    this.socket = io.connect();
+    this.socket = socket;
   },
   //load the game assets before the game starts
   preload() {
@@ -325,10 +326,14 @@ let GameState = {
   killPlayer(player, fire) {
     console.log("ouch!");
     game.state.start("GameState");
+    socket.emit("gameOver");
+    this.game();
   },
   win(player, goal) {
     alert("you win!");
     game.state.start("GameState");
+    socket.emit("won");
+    this.game();
   },
   createBarrel() {
     //give me the first dead sprite
@@ -362,6 +367,7 @@ let Game = {
     create: function (game) {
         this.createButton(game, "Play", game.world.centerX, game.world.centerY + 32, 300, 100, function () {
             this.state.start("GameState");
+            socket.emit("playing");
         });
         titlescreen = game.add.sprite(game.world.centerX, game.world.centerY - 192, "titlescreen");
         titlescreen.anchor.setTo(0.5, 0.5);

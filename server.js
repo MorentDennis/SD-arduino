@@ -121,4 +121,17 @@ io.on('connection',function(socket){
     });
 });
 
+outPutSp.on('gameOver',function(){
+    outPutSp.write('gameOver');
+    console.log("gameOver");
+});
+outPutSp.on('playing',function(){
+    outPutSp.write('playing');
+    console.log("playing");
+});
+outPutSp.on('won',function(){
+    outPutSp.write('won');
+    console.log("won");
+});
+
 
