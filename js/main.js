@@ -350,9 +350,6 @@ let GameState = {
 };
 
 //initiate the Phaser framework
-let game = new Phaser.Game(360, 592, Phaser.AUTO);
 
-game.state.add("GameState", GameState);
-game.state.start("GameState");
 
 

@@ -7,7 +7,7 @@ let titlescreen;
 Game.MainMenu.prototype = {
     create:function(game){
         this.createButton(game, "Play", game.world.centerX, game.world.centerY + 32, 300, 100, function(){
-            this.state.start("");
+            this.state.start("GameState");
         });
         titlescreen = game.add.sprite(game.world.centerX, game.world.centerY -192, "titlescreen");
         titlescreen.anchor.setTo(0.5,0.5);
@@ -25,3 +25,8 @@ Game.MainMenu.prototype = {
         text.anchor.setTo(0.5, 0.5);
     }
 };
+
+let game = new Phaser.Game(360, 592, Phaser.AUTO);
+
+game.state.add("GameState", GameState);
+//game.state.start("GameState");
