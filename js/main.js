@@ -325,13 +325,13 @@ let GameState = {
   },
   killPlayer(player, fire) {
     console.log("ouch!");
-    game.state.start("GameState");
+    game.state.start("Game");
     socket.emit("gameOver");
     this.game();
   },
   win(player, goal) {
     alert("you win!");
-    game.state.start("GameState");
+    game.state.start("Game");
     socket.emit("won");
     this.game();
   },
@@ -355,44 +355,45 @@ let GameState = {
 };
 
 let titlescreen;
+
 let Game = {
-
-// Game.MainMenu = function(game){
-//
-// };
-
-
-
-
-    create: function (game) {
-        this.createButton(game, "Play", game.world.centerX, game.world.centerY + 32, 300, 100, function () {
-            this.state.start("GameState");
-            socket.emit("playing");
-        });
-        titlescreen = game.add.sprite(game.world.centerX, game.world.centerY - 192, "titlescreen");
-        titlescreen.anchor.setTo(0.5, 0.5);
+    preload: function(game){
+        this.load.image("background","assets/images/background.jpg");
+        this.load.image("button1", "assets/buttons/button1.png");
+        this.load.image("button2", "assets/buttons/button2.png");
     },
-    update: function (game) {
-
+    create: function (game) {
+        let background = game.add.tileSprite(0, 0, 360, 600, 'background');
+        this.createButton(game, "Play", game.world.centerX, game.world.centerY , 150, 50, function () {
+            this.state.start("GameState");
+        });
+        this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+        this.scale.pageAlignHorizontally = true;
+        this.scale.pageAlignVertically = true;
     },
     createButton: function (game, string, x, y, w, h, callback) {
-        let button1 = game.add.button(x, y, 'button', callback, this, 2, 1, 0);
+        let button1 = game.add.button(x, y + 120, 'button1', callback, this, 2, 1, 0);
         button1.anchor.setTo(0.5, 0.5);
         button1.width = w;
         button1.height = h;
         let text = game.add.text(button1.x, button1.y, string, {
-            font: '14px Arial',
-            fill: "#fff", align: "center"
+            font: '20px Arial',
+            fill: "#000000", align: "center"
         });
         text.anchor.setTo(0.5, 0.5);
+        button1.onInputOver.add(over , this);
+        button1.onInputOut.add(out, this);
+        function over(button) {
+            button.loadTexture('button2')
+        }
+        function out(button) {
+            button.loadTexture('button1')
+        }
     }
 
 };
-
-//initiate the Phaser framework
 let game = new Phaser.Game(360, 592, Phaser.AUTO);
 game.state.add("Game", Game);
 game.state.add("GameState", GameState);
 game.state.start("Game");
-
 
