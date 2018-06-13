@@ -1,9 +1,7 @@
 var express = require('express');
 var SerialPort = require("serialport");
 var portName = 'COM3';
-var otherPortName = 'COM4';
-process.env.UV_THREADPOOL_SIZE=64
-
+//var otherPortName = 'COM4';
 
 var app = express();
 var server = require('http').Server(app);
@@ -18,20 +16,24 @@ app.get('/',function(req,res){
 });
 
 
-var outPutSp = new SerialPort(otherPortName, {
-    baudRate: 9600
-})
+// var outPutSp = new SerialPort(otherPortName, {
+//     baudRate: 9600
+// })
 
 
-outPutSp.on('open', () => {
-    console.log('outPut port open');
-    outPutSp.write('H');
-})
+
+// outPutSp.on('open', () => {
+//     console.log('outPut port open');
+//     outPutSp.write('H');
+// })
 
 
 var sp = new SerialPort(portName, {
     baudRate: 9600
 });// instantiate the port
+
+var outPutSp = sp; // for testing
+
 
 sp.on("close", function (err) {
     console.log("port closed");
@@ -47,40 +49,26 @@ sp.on("close", function (err) {
 
 var cleanDataX = ""; // this stores the clean data
 var bufferString = "";  // this stores the buffer
-
 var cleanDataY = "";
-var readDataY = "";
 
-
-
-sp.on("data", function (data) { // call back when data is received
-	
-	//console.log("serial port: " + data.toString());
+sp.on("data", function (data) { 
 	
     bufferString += data.toString() 
-   // console.log(bufferString);
-  //  console.log(bufferString);
-   // console.log(readDataX) // append data to buffer
+
     // if the letters "A" and "B" are found on the buffer then isolate what"s in the middle
     // as clean data. Then clear the buffer.
     if (bufferString.indexOf("B") >= 0 && bufferString.indexOf("A") >= 0) {
         cleanDataX = bufferString.substring(bufferString.indexOf("A") + 1, bufferString.indexOf("B"));
         cleanDataY =  bufferString.substring(bufferString.indexOf("C") + 1, bufferString.indexOf("D"))
-       // console.log(cleanDataX);
-        console.log(cleanDataY);
-        
         bufferString = "";
        
         if(cleanDataX  == 1023)
         {
             io.sockets.emit("movedRight");
-          //  console.log("movedRight")
-          //  readDataX = "";
         }
         else if (cleanDataX <= 1)
         {
             io.sockets.emit("movedLeft");
-        //    readDataX =  "";
         }
         else if (cleanDataX  < 1022) {
             io.sockets.emit("stopped")
@@ -93,17 +81,10 @@ sp.on("data", function (data) { // call back when data is received
         {
             io.sockets.emit("nojump");
         } 
-       
         cleanDataX = "";
         cleanDataY = "";
-
-        
     }
-
-   
-
 });
-
 
 
 server.listen(process.env.PORT || 8081,function(){
@@ -111,10 +92,7 @@ server.listen(process.env.PORT || 8081,function(){
 });
 
 
-
 io.on('connection',function(socket){
-
-    
 
     socket.on('gameOver',function(){
         outPutSp.write('gameOver');

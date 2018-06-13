@@ -7,12 +7,8 @@ let GameState = {
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
     this.scale.pageAlignHorizontally = true;
     this.scale.pageAlignVertically = true;
-
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
     this.game.physics.arcade.gravity.y = 1000;
-
-    this.cursors = this.game.input.keyboard.createCursorKeys();
-
     this.game.world.setBounds(0, 0, 360, 700);
 
     this.RUNNING_SPEED = 180;
@@ -53,16 +49,8 @@ let GameState = {
   //executed after everything is loaded
   create() {
 
-
     this.movingRight = false;
     this.movingLeft = false;
-
-
-
-
-    this.socket.on('test', () => {
-      console.log("socket connected")
-    })
     this.ground = this.add.sprite(0, 638, "ground");
     this.game.physics.arcade.enable(this.ground);
     this.ground.body.allowGravity = false;
@@ -70,10 +58,7 @@ let GameState = {
 
 
     var UPDATE_TIME = 175;
-    
     this.updateMovementTimer = game.time.events.add(UPDATE_TIME, this.checkForMovement, this);
-   // this.updateJumpTimer = game.time.events.add(100, this.checkForJump, this);
-
     //parse the file
     this.levelData = JSON.parse(this.game.cache.getText("level"));
 
@@ -124,7 +109,6 @@ let GameState = {
 
     this.game.camera.follow(this.player);
 
-    this.createOnscreenControls();
 
     this.barrels = this.add.group();
     this.barrels.enableBody = true;
@@ -135,11 +119,6 @@ let GameState = {
       this.createBarrel,
       this
     );
-  },
-
-
-  checkForJump() {
-    
   },
 
   checkForMovement() {
@@ -158,38 +137,21 @@ let GameState = {
 
     this.socket.on("nojump", () => this.player.customParams.mustJump = false)
     
-
-
     this.socket.on('movedRight', () => {
-      
-   
-     // this.moveToRight();
+
      this.isMovingRight  = true;
      this.isMovingLeft = false;
      this.player.customParams.isMovingLeft = false;
      this.player.customParams.isMovingRight = true;
-   
-     
-
-
-    // this.timer = game.time.events.add(Phaser.Timer.SECOND * 4, fadePicture, this)
-
-
-      console.log("right");
+      //console.log("right");
     })
     this.socket.on('movedLeft', () => {
       this.isMovingRight = false;
       this.isMovingLeft = true;
       this.player.customParams.isMovingLeft = true;
       this.player.customParams.isMovingRight = false;
-      
-      
-    //  this.moveToLeft();
-      console.log("left");
+      //console.log("left");
     })
-
-    
-    
 
   },
 
@@ -212,23 +174,12 @@ let GameState = {
   update() {
     this.speed = 6;
     this.prevX = 508;
-    
-    
-   
-
-
-    
-
     this.player.animations.stop();
     this.player.frame = 3;
-
-
     this.game.physics.arcade.collide(this.player, this.ground);
     this.game.physics.arcade.collide(this.player, this.platforms);
-
     this.game.physics.arcade.collide(this.barrels, this.ground);
     this.game.physics.arcade.collide(this.barrels, this.platforms);
-
     this.game.physics.arcade.overlap(this.player, this.fires, this.killPlayer);
     this.game.physics.arcade.overlap(
       this.player,
@@ -236,7 +187,6 @@ let GameState = {
       this.killPlayer
     );
     this.game.physics.arcade.overlap(this.player, this.goal, this.win);
-
     this.player.body.velocity.x = 0;
 
     if ( this.isMovingLeft ) {
@@ -253,7 +203,6 @@ let GameState = {
       this.player.animations.stop();
       this.player.frame = 3;
     }
-
     if (
       ( this.player.customParams.mustJump ) &&
       this.player.body.touching.down
@@ -268,66 +217,12 @@ let GameState = {
       }
     }, this);
   },
-  createOnscreenControls() {
-    this.leftArrow = this.add.button(20, 535, "arrowButton");
-    this.rightArrow = this.add.button(110, 535, "arrowButton");
-    this.actionButton = this.add.button(280, 535, "actionButton");
-
-    this.leftArrow.alpha = 0.5;
-    this.rightArrow.alpha = 0.5;
-    this.actionButton.alpha = 0.5;
-
-    this.leftArrow.fixedToCamera = true;
-    this.rightArrow.fixedToCamera = true;
-    this.actionButton.fixedToCamera = true;
-
-    this.actionButton.events.onInputDown.add(function() {
-      this.player.customParams.mustJump = true;
-    }, this);
-
-    this.actionButton.events.onInputUp.add(function() {
-      this.player.customParams.mustJump = false;
-    }, this);
-
-    //left
-    this.leftArrow.events.onInputDown.add(function() {
-      this.player.customParams.isMovingLeft = true;
-    }, this);
-
-    this.leftArrow.events.onInputUp.add(function() {
-      this.player.customParams.isMovingLeft = false;
-    }, this);
-
-    this.leftArrow.events.onInputOver.add(function() {
-      this.player.customParams.isMovingLeft = true;
-    }, this);
-
-    this.leftArrow.events.onInputOut.add(function() {
-      this.player.customParams.isMovingLeft = false;
-    }, this);
-
-    //right
-    this.rightArrow.events.onInputDown.add(function() {
-      this.player.customParams.isMovingRight = true;
-    }, this);
-
-    this.rightArrow.events.onInputUp.add(function() {
-      this.player.customParams.isMovingRight = false;
-    }, this);
-
-    this.rightArrow.events.onInputOver.add(function() {
-      this.player.customParams.isMovingRight = true;
-    }, this);
-
-    this.rightArrow.events.onInputOut.add(function() {
-      this.player.customParams.isMovingRight = false;
-    }, this);
-  },
+  
   killPlayer(player, fire) {
     console.log("ouch!");
     game.state.start("Game");
     socket.emit("gameOver");
-    this.game();
+    //this.game(); ???
   },
   win(player, goal) {
     alert("you win!");
@@ -342,7 +237,6 @@ let GameState = {
     if (!barrel) {
       barrel = this.barrels.create(0, 0, "barrel");
     }
-
     barrel.body.collideWorldBounds = true;
     barrel.body.bounce.set(1, 0);
 
@@ -355,7 +249,6 @@ let GameState = {
 };
 
 let titlescreen;
-
 let Game = {
     preload: function(game){
         this.load.image("background","assets/images/background.jpg");
